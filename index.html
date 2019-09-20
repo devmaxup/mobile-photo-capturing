@@ -1,0 +1,73 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="row justify-content-center align-items-center">
+        <div class="col text-center">
+
+          <form class="mt-5" id="main">
+
+            <h2 class="mt-5">
+              Take a picture
+            </h2>
+            <p>
+              You will be asked to give camera access
+            </p>
+
+
+            <div class="mt-5">
+              <div class="btn-group">
+                <button type="button" class="btn btn-outline-primary" id="frontCamera" data-mode="USER">
+                  Front
+                </button>
+                <button type="button" class="btn btn-primary" id="rearCamera" data-mode="ENVIRONMENT">
+                  Rear
+                </button>
+              </div>
+            </div>
+
+            <div class="m-5">
+              <h2 class="text-secondary" id="turnOnMessage">
+                Give camera access to start
+              </h2>
+
+              <h2 class="text-danger mt-2" id="#accessError" style="display: none">
+                Camera access error
+              </h2>
+
+              <video id="video" autoplay="true" style="display: none"></video>
+              <img id="preview" style="display: none" />
+            </div>
+
+            <p class="status text-success mt-2" style="display: none">
+              Picture was uploaded to server
+            </p>
+            <p class="status text-danger mt-2" style="display: none">
+              Picture upload or camera error
+            </p>
+
+            <div class="spinner m-3" style="display: none">
+              <div class="spinner-border text-success" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+
+            <input type="submit" id="takeAPicture" value="Take a picture" disabled class="btn btn-success pl-4 pr-4 mt-3" />
+            <input type="button" id="takeAnother" value="Take another" class="btn btn-primary pl-4 pr-4 mt-3" style="display: none" />
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"></script>
+
+    <script src="./jslib-html5-camera-photo.min.js"></script>
+    <script src="./index.js"></script>
+  </body>
+</html>
