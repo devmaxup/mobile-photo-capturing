@@ -7,4 +7,5 @@
 *.sln
 *.sw?
 
+node_modules
 uploads/*
