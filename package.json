@@ -1,0 +1,19 @@
+{
+  "name": "mobile-photo-capturing",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/devmaxup/mobile-photo-capturing.git",
+  "author": "dev <devmaxup@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon ./index.js",
+    "start": "node ./index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-fileupload": "^1.1.6-alpha.5"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.2"
+  }
+}
