@@ -20,6 +20,10 @@ const $takeAnotherButton = $('#takeAnother');
 
 const cameraPhoto = new JslibHtml5CameraPhoto.default($video[0]);
 
+if (!cameraPhoto) {
+  $turnOnMessage.hide();
+  $cameraAccessError.show();
+}
 
 function dataURItoBlob(dataURI) {
   const byteString = atob(dataURI.split(',')[1]);
@@ -60,7 +64,7 @@ function initCamera(facingMode = DEFAULT_FACING_MODE) {
     .catch(function (error) {
       console.error('Camera not started!', error);
       $takeAPictureButton.attr('disabled', true);
-      $turnOnMessage.hode();
+      $turnOnMessage.hide();
       $cameraAccessError.show();
     });
 }
