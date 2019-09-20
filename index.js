@@ -1,114 +1,36 @@
-const DEFAULT_FACING_MODE = 'ENVIRONMENT';
+const express = require('express');
+const fileUpload = require('express-fileupload');
 
-const FACING_MODES = JslibHtml5CameraPhoto.FACING_MODES;
-const IMAGE_TYPES = JslibHtml5CameraPhoto.IMAGE_TYPES;
+const UPLOADS_DIR = 'uploads/';
+const STATICS_DIR = 'public/';
+const MAX_FILE_SIZE = 8 * 1024 * 1024;
 
-const CAMERA_CONFIG = {
-  sizeFactor: 1,
-  imageType: IMAGE_TYPES.JPG,
-  imageCompression: 0.8
-};
+const app = express();
+app.use(express.static(STATICS_DIR));
+app.use('/' + UPLOADS_DIR, express.static(UPLOADS_DIR));
 
-const $form = $('#main');
-const $video = $('#video');
-const $preview = $('#preview');
-const $cameraSwitchers = $('#frontCamera, #rearCamera');
-const $cameraAccessError = $('#accessError');
-const $turnOnMessage = $('#turnOnMessage');
-const $takeAPictureButton = $('#takeAPicture');
-const $takeAnotherButton = $('#takeAnother');
+app.use(fileUpload({
+  limits: { fileSize: MAX_FILE_SIZE },
+  useTempFiles : true,
+  tempFileDir : '/tmp/'
+}));
 
-const cameraPhoto = new JslibHtml5CameraPhoto.default($video[0]);
 
-if (!cameraPhoto) {
-  $turnOnMessage.hide();
-  $cameraAccessError.show();
-}
-
-function dataURItoBlob(dataURI) {
-  const byteString = atob(dataURI.split(',')[1]);
-  const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-  const ab = new ArrayBuffer(byteString.length);
-  const ia = new Uint8Array(ab);
-
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i);
+app.post('/upload', function(req, res) {
+  const { files } = req;
+  if (!files || Object.keys(files).length === 0) {
+    return res.status(400).send('No files were uploaded.');
   }
 
-  return new Blob([ab], {type: mimeString});
-}
+  const { file } = files;
+  const path = UPLOADS_DIR + file.name;
+  file.mv(path, function(err) {
+    if (err) {
+      return res.status(500).send(err);
+    }
 
-function takePhoto () {
-  const dataURI = cameraPhoto.getDataUri(CAMERA_CONFIG);
-  return dataURItoBlob(dataURI);
-}
-
-function initUI() {
-  $form.find('.status.text-success, .status.text-danger').hide();
-  $cameraAccessError.hide();
-  $turnOnMessage.hide();
-  $takeAnotherButton.hide();
-  $preview.hide();
-  $takeAPictureButton.show();
-  $video.show();
-}
-
-function initCamera(facingMode = DEFAULT_FACING_MODE) {
-  cameraPhoto.startCameraMaxResolution(FACING_MODES[facingMode])
-    .then(function () {
-      $turnOnMessage.hide();
-      $takeAPictureButton.attr('disabled', false);
-      $video.show();
-    })
-    .catch(function (error) {
-      console.error('Camera not started!', error);
-      $takeAPictureButton.attr('disabled', true);
-      $turnOnMessage.hide();
-      $cameraAccessError.show();
-    });
-}
-
-$form.submit(function (e) {
-  e.preventDefault();
-
-  $form.find('.status.text-success, .status.text-danger').hide();
-  $form.find('.spinner').show();
-
-  const photo = takePhoto();
-  const formData = new FormData();
-  formData.append("file", photo, 'picture.jpg');
-
-  return $.post({
-    url: 'upload.php',
-    data: formData,
-    cache: false,
-    processData: false,
-    contentType: false,
-  })
-    .then(function (uploadUrl) {
-      $form.find('.status.text-success').show();
-      $form.find('.spinner').hide();
-      $takeAPictureButton.hide();
-      $takeAnotherButton.show();
-      $video.hide();
-      $preview.attr('src', uploadUrl + '?_=' + Math.random());
-      $preview.show();
-    })
-    .catch(function (e) {
-      console.error(e);
-      $form.find('.status.text-danger').show();
-      $form.find('.spinner').hide();
-    });
+    res.send(path);
+  });
 });
 
-
-$cameraSwitchers.click(function () {
-  $cameraSwitchers.toggleClass('btn-primary').toggleClass('btn-outline-primary');
-  initUI();
-  initCamera($(this).attr('data-mode'));
-});
-
-$takeAnotherButton.click(initUI);
-
-initCamera();
+app.listen(8081);
