@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "express-fileupload": "^1.1.6-alpha.5"
+    "express-fileupload": "^1.1.9"
   },
   "devDependencies": {
     "nodemon": "^1.19.2"
