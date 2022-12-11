@@ -10,7 +10,7 @@
     "start": "node ./index.js"
   },
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-fileupload": "^1.1.6-alpha.5"
   },
   "devDependencies": {
